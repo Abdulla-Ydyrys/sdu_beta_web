@@ -1,0 +1,53 @@
+{% extends 'admin_template/base.html' %}
+
+{% block main_content %}
+
+<h1>Manage Companies</h1>
+{% url 'add_company' as add_company %}
+ <a href="{{ add_company }}" class="btn btn-outline-info">Add Company</a>
+
+ <table class="table table-hover">
+    {% if messages %}
+        {% for message in messages %}
+          {% if message.tags == 'error' %}
+      <div class="form-group alert alert-warning alert-dismissible fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+         <strong>{{ message }}</strong></div>
+         {% endif %}
+      {% if message.tags == 'success' %}
+      <div class="form-group alert alert-success alert-dismissible fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+         <strong>{{ message }}</strong></div>
+         {% endif %}
+        {% endfor %}
+      {% endif %}
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Address</th>
+        <th>Image</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+     {% for company in companies %}
+      <tr>
+        <td>{{ company.company.username }}</td>
+        <td>{{ company.company.email }}</td>
+        <td>{{ company.address }}</td>
+        <td><img src="{{ company.display_image }}" width="100"></td>
+
+        <td><a href="{% url 'edit_company' company_id=company.company.id %}" class="btn btn-outline-info">Edit</a>
+           <a href="{% url 'delete_company' company_id=company.company.id %}" class="btn btn-outline-danger">Delete</a>
+        </td>
+      </tr>
+
+     {% endfor %}
+    </tbody>
+  </table>
+
+
+
+
+{% endblock %}

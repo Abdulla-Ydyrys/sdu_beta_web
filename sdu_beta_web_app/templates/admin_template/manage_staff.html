@@ -1,0 +1,58 @@
+{% extends 'admin_template/base.html' %}
+
+{% block main_content %}
+
+<h1>Manage Staffs</h1>
+      {% url 'add_staff' as add_staff %}
+  <a href="{{ add_staff }}" class="btn btn-outline-info">Add Staff</a>
+
+ <table class="table table-hover">
+      {% if messages %}
+        {% for message in messages %}
+          {% if message.tags == 'error' %}
+      <div class="form-group alert alert-warning alert-dismissible fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+         <strong>{{ message }}</strong></div>
+         {% endif %}
+      {% if message.tags == 'success' %}
+      <div class="form-group alert alert-success alert-dismissible fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+         <strong>{{ message }}</strong></div>
+         {% endif %}
+        {% endfor %}
+      {% endif %}
+    <thead>
+      <tr>
+        <th>Firstname</th>
+        <th>Lastname</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Gender</th>
+        <th>Address</th>
+        <th>Image</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+     {% for staff in staffs %}
+      <tr>
+        <td>{{ staff.staff.first_name }}</td>
+        <td>{{ staff.staff.last_name }}</td>
+        <td>{{ staff.staff.username }}</td>
+        <td>{{ staff.staff.email }}</td>
+        <td>{{ staff.gender }}</td>
+        <td>{{ staff.address }}</td>
+        <td><img src="{{ staff.display_image }}" width="100" ></td>
+        <td><a href="{% url 'edit_staff' staff_id=staff.staff.id %}" class="btn btn-outline-info">Edit</a>
+            <a href="{% url 'delete_staff' staff_id=staff.staff.id %}" class="btn btn-outline-danger">Delete</a>
+        </td>
+      </tr>
+
+     {% endfor %}    </tbody>
+  </table>
+
+
+
+
+
+{% endblock %}

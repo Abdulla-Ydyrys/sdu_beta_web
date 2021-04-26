@@ -1,0 +1,212 @@
+{% extends 'student_template/base.html' %}
+
+{% block main_content %}
+
+<h1>Student registration</h1>
+
+
+ {% for dat in data %}
+ <input id="reg_id" type="hidden" value="{{ dat.id }}">
+                        {% now "Y-m-d\TH:i" as todays_date %}
+  {% if expiration_date.end_date|date:"Y-m-d\TH:i" > todays_date  %}
+
+                               STATUS : {% if dat.registration_status == 1 %}
+                                    <span class="alert alert-success">Approved</span>
+                                 <a href="{{ dat.agreement }}" download>FILE</a>
+       <a href="" class="btn btn-outline-danger cancel_open_modal" data-toggle="modal" data-target="#myModal">Cancel Registration</a>
+                                <p>Supervisor: {{ dat.supervisor_id.username }}</p>
+                                <p>Beta Type: {{ dat.beta_type }}</p>
+                                {% elif dat.registration_status == 2 %}
+                                    <span class="alert alert-danger">Rejected</span>
+                                <a href="{{ dat.agreement }}" download>FILE</a>
+       <a href="" class="btn btn-outline-danger cancel_open_modal" data-toggle="modal" data-target="#myModal">Cancel Registration</a>
+                                <p>Reject Reason: {{ dat.reject_reason }}</p>
+                                <p>Supervisor: {{ dat.supervisor_id.username }}</p>
+                                <p>Beta Type: {{ dat.beta_type }}</p>
+                                {% else %}
+
+                                    <span class="alert alert-warning">Pending</span>
+                                <a href="{{ dat.agreement }}" download>FILE</a>
+       <a href="" class="btn btn-outline-danger cancel_open_modal"  data-toggle="modal" data-target="#myModal">Cancel Registration</a>
+                            <p>Supervisor: {{ dat.supervisor_id.username }}</p>
+                                <p>Beta Type: {{ dat.beta_type }}</p>
+{% endif %}
+
+            {% else %}
+            <p>SDU beta registration is CLOSED.</p>
+                STATUS : {% if dat.registration_status == 1 %}
+                                    <span class="alert alert-success">Approved</span>
+                                <p><br>Supervisor: {{ dat.supervisor_id }}</p>
+                                <p>Beta Type: {{ dat.beta_type }}</p>
+                                {% elif dat.registration_status == 2 %}
+                                    <span class="alert alert-danger">Rejected</span>
+                                 <p><br>Reject Reason: {{ dat.reject_reason }}</p>
+                                <p>Supervisor: {{ dat.supervisor_id }}</p>
+                                <p>Beta Type: {{ dat.beta_type }}</p>
+                                 {% endif %}
+      {% endif %}
+
+
+{% empty %}
+
+{% now "Y-m-d\TH:i" as todays_date %}
+  {% if expiration_date.end_date|date:"Y-m-d\TH:i" > todays_date %}
+ <form action="{% url 'confirm_registration' %}" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+                <div class="form-group">
+                <label>Agreement</label>
+                <input type="file" class="form-control-file" name="agreement" required>
+              </div>
+                <div class="form-group">
+                 <label >Beta Career type:</label>
+                  <select class="form-control" name="beta_type" id="beta_type"  onchange="var optionVal = $(this).find(':selected').val(); doSomething(optionVal)">
+                <option>Academic Beta</option>
+                <option>SDU Beta</option>
+                <option>Industrial Beta</option>
+              </select>
+                </div>
+
+
+                <div id="sta">
+
+
+                <div class="form-group" id="staff">
+                 <label >Choose your Supervisor</label>
+                  <select class="form-control" name="staffs" id="staffs">
+                        {% for staff in staffs %}
+                <option value="{{ staff.id }}">{{ staff.first_name }} {{ staff.last_name }}</option>
+                            {% endfor %}
+                </select>
+                </div>
+
+                 </div>
+
+
+                <div id="comp">
+
+                </div>
+
+           <div class="form-group">
+    <button type="submit" class="btn btn-primary">Confirm</button>
+       </div>
+      {% else %}
+        <p>SDU beta registration is CLOSED. You didn't register!</p>
+      {% endif %}
+       </form>
+{% endfor %}
+
+             {% if messages %}
+                    {% for message in messages %}
+                      {% if message.tags == 'error' %}
+                  <div class="form-group alert alert-warning alert-dismissible fade show" role="alert">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                     <strong>{{ message }}</strong></div>
+                     {% endif %}
+                  {% if message.tags == 'success' %}
+                  <div class="form-group alert alert-success alert-dismissible fade show" role="alert">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                     <strong>{{ message }}</strong></div>
+                     {% endif %}
+                        {% endfor %}
+                     {% endif %}
+
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Cancel confirmation</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+         <input type="hidden" id="submit_id">
+            Are you sure to cancel Registration?
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+           <button type="button" class="btn btn-outline-info" id="cancel">Yes</button>
+           <a href="" class="btn btn-outline-danger">No</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+{% endblock main_content %}
+
+
+
+{% block custom_js %}
+<script>
+$(document).ready(function(){
+        $(".cancel_open_modal").click(function(){
+            var id = $( "#reg_id" ).val()
+            $("#submit_id").val(id);
+        });
+
+        $(document).on("click","#cancel",function(){
+                $(this).attr("disabled","disabled")
+                $(this).text("Canceling registration...")
+                var id=$("#submit_id").val();
+                   $.ajax({
+                        url:'{% url 'cancel_registration' %}',
+                        type:'POST',
+                        data:{id:id},
+                    })
+                    .done(function(response){
+                        location.reload()
+                    })
+                    .fail(function(){
+                        alert("Error ")
+                    })
+
+         });
+     });
+
+
+
+
+  function doSomething(param) {
+    var var1 = param;
+    var var2 = "Industrial Beta";
+    if (var1 == var2 ) {
+          $( "#staff" ).remove();
+          document.querySelector('#comp').insertAdjacentHTML(
+             'afterbegin',
+            ` <div class="form-group" id="company">
+               <label >Choose your Supervisor</label>
+                          <select class="form-control" name="companies" id="companies">
+                                 {% for company in companies %}
+                        <option value="{{ company.id }}">{{ company.username }} </option>
+                                     {% endfor %}
+          </select>  </div>`
+  )
+    }else{
+        $( "#company" ).remove();
+        $( "#staff" ).remove();
+          document.querySelector('#sta').insertAdjacentHTML(
+             'afterbegin',
+            ` <div class="form-group" id="staff">
+               <label >Choose your Supervisor</label>
+                          <select class="form-control" name="staffs" id="staffs">
+                                 {% for staff in staffs %}
+                        <option value="{{ staff.id }}">{{ staff.first_name }} {{ staff.last_name }} </option>
+                                     {% endfor %}
+          </select>  </div>`
+  )
+    }
+}
+
+
+
+</script>
+{% endblock custom_js %}

@@ -1,0 +1,76 @@
+{% extends 'student_template/base.html' %}
+
+{% block main_content %}
+
+
+
+<h1>Grades List</h1>
+
+<table class="table table-bordered table-hover">
+  <thead>
+   <tr>
+        <th>{{ student.student.first_name }} {{ student.student.last_name }} | ID: {{ student.student.username }}</th>
+      <td colspan="4" class="text-center">Coordinator: Baurzhan Berlikkozha, Supervisor: {{supervisor.username}}</td>
+    </tr>
+    <tr>
+      <th scope="col">Assesment</th>
+      <th scope="col">Grades</th>
+      <th scope="col">Average</th>
+      <th scope="col">Grader</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Formative Assessment (60/100)</th>
+      <td>{{ s_mark }}</td>
+      <td>{{ s_mark }}</td>
+      <td>Supervisor</td>
+    </tr>
+    <tr>
+      <th scope="row">Reports (15/100)</th>
+      <td>{{ grade }} </td>
+      <td>{{ grade }}</td>
+      <td>Coordinator</td>
+    </tr>
+    <tr>
+      <th scope="row">Final Presentation (25/100)</th>
+      <td>{{ f_mark }}</td>
+      <td>{{ f_mark }}</td>
+      <td>Coordinator</td>
+    </tr>
+   <tr>
+      <th scope="row">Total</th>
+      <td colspan="2" class="text-center">{{ total }} </td>
+      <td>Letter Grade:
+          {% if total >= 0 and total < 25 %}
+          F
+          {% elif total >= 25 and total < 50 %}
+          FX
+          {% elif total >= 50 and total < 55 %}
+          D
+          {% elif total >= 55 and total < 60 %}
+          D+
+          {% elif total >= 60 and total < 65 %}
+          C-
+          {% elif total >= 65 and total < 70 %}
+          C
+          {% elif total >= 70 and total < 75 %}
+          C+
+          {% elif total >= 75 and total < 80 %}
+          B-
+          {% elif total >= 80 and total < 85 %}
+          B
+          {% elif total >= 85 and total < 90 %}
+          B+
+          {% elif total >= 90 and total < 95 %}
+          A-
+          {% elif total >= 95 and total <= 100 %}
+          A
+            {% endif %}
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+{% endblock %}

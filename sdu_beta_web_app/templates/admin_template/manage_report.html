@@ -1,0 +1,52 @@
+{% extends 'admin_template/base.html' %}
+
+{% block main_content %}
+
+<h1>Manage Reports</h1>
+{% url 'add_report' as add_report %}
+ <a href="{{ add_report }}" class="btn btn-outline-info">Add Report</a>
+
+ <table class="table table-hover">
+     {% if messages %}
+        {% for message in messages %}
+      {% if message.tags == 'success' %}
+      <div class="form-group alert alert-success alert-dismissible fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+         <strong>{{ message }}</strong></div>
+         {% endif %}
+       {% if message.tags == 'error' %}
+      <div class="form-group alert alert-danger alert-dismissible fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+         <strong>{{ message }}</strong></div>
+         {% endif %}
+        {% endfor %}
+
+
+      {% endif %}
+    <thead>
+      <tr>
+        <th>Report Name</th>
+        <th width="40%">Report Details</th>
+        <th>Due Date</th>
+        <th>Action</th>
+        <th>Submission Status</th>
+      </tr>
+    </thead>
+    <tbody>
+     {% for report in reports %}
+      <tr>
+        <td>{{ report.report_name }}</td>
+        <td><textarea class="form-control" rows="5" name="report_detail" disabled>{{ report.report_detail }}</textarea></td>
+        <td>{{ report.due_date|date:"M d, H:iA, Y" }}</td>
+        <td><a href="{% url 'edit_report' report_id=report.id %}" class="btn btn-outline-info">Edit</a>
+           <a href="{% url 'delete_report' report_id=report.id %}" class="btn btn-outline-danger">Delete</a>
+        </td>
+          <td><a href="{% url 'view_report' report_id=report.id %}" class="btn btn-outline-success">Check</a></td>
+      </tr>
+     {% endfor %}
+    </tbody>
+  </table>
+
+
+
+{% endblock %}

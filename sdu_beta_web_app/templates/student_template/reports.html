@@ -1,0 +1,11 @@
+{% extends 'student_template/base.html' %}
+
+{% block main_content %}
+
+<h1>Reports</h1>
+
+ {% for report in report %}
+  <a href="report\{{ report.id }}" class="list-group-item list-group-item-action">{{report.report_name}}</a>
+  {% endfor %}
+
+{% endblock main_content %}

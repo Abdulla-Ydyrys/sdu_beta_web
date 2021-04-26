@@ -1,0 +1,33 @@
+
+
+<div class="col-2">
+<div class="list-group">
+  {% url 'admin_profile' as admin_profile %}
+  <a href="{{ admin_profile }}" class="list-group-item list-group-item-action {% if request.path == admin_profile %} active {% endif %}"><img src="{{ user.admin.display_image }}" width="80" >{{ user.username }}</a>
+  {% url 'add_staff' as add_staff %}
+  {% url 'manage_staff' as manage_staff %}
+  {% url 'edit_staff' staff_id=id as edit_staff %}
+  <a href="{{ manage_staff }}" class="list-group-item list-group-item-action {% if request.path == manage_staff %} active {% endif %} {% if request.path == edit_staff %} active {% endif %} {% if request.path == add_staff %} active {% endif %}  ">Manage Staffs</a>
+  {% url 'add_company' as add_company %}
+  {% url 'manage_company' as manage_company  %}
+  {% url 'edit_company' company_id=id as edit_company %}
+  <a href="{{ manage_company }}" class="list-group-item list-group-item-action {% if request.path == manage_company %} active {% endif %} {% if request.path == edit_company %} active {% endif %} {% if request.path == add_company %} active {% endif %}">Manage Companies</a>
+  {% url 'add_student' as add_student %}
+  {% url 'manage_student' as manage_student %}
+  {% url 'edit_student' student_id=id as edit_student %}
+  <a href="{{ manage_student }}" class="list-group-item list-group-item-action {% if request.path == manage_student %} active {% endif %} {% if request.path == edit_student %} active {% endif %} {% if request.path == add_student %} active {% endif %}">Manage Students</a>
+   {% url 'add_report' as add_report %}
+   {% url 'manage_report' as manage_report %}
+    {% url 'edit_report' report_id=id as edit_report %}
+  <a href="{{ manage_report }}" class="list-group-item list-group-item-action {% if request.path == manage_report %} active {% endif %} {% if request.path == edit_report %} active {% endif %} {% if request.path == add_report %} active {% endif %}">Manage reports</a>
+  {% url 'manage_registration' as manage_registration %}
+  <a href="{{ manage_registration }}" class="list-group-item list-group-item-action {% if request.path == manage_registration %} active {% endif %}">Manage Registration</a>
+  {% url 'grades' as grades %}
+  {% url 'view_grade' student_id=id as view_grade %}
+  <a href="{{ grades }}" class="list-group-item list-group-item-action {% if request.path == grades %} active {% endif %} {% if request.path == view_grade %} active {% endif %}">Grades List</a>
+  {% url 'feedback_messages' as feedback_messages %}
+  <a href="{{ feedback_messages }}" class="list-group-item list-group-item-action {% if request.path == feedback_messages %} active {% endif %}">Feedback Reply</a>
+
+
+</div>
+  </div>

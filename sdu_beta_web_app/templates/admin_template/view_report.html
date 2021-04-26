@@ -1,0 +1,107 @@
+{% extends 'admin_template/base.html' %}
+
+{% block main_content %}
+
+<h1> {{ report_id.report_name }}</h1>
+
+
+<form method="get">
+
+          <div class="container">
+    <div class="row ">
+
+    <div class="form-group">
+      <label for="id_student_id">Search by student name</label>
+        <input type="text" class="form-control" name="student_id" id="id_student_id">
+    </div>
+
+
+ <div class="offset-md-1" style="padding-top:30px;">
+    <button type="submit" class="btn btn-outline-info">Search</button>
+              </div>
+
+         </div>
+        </div>
+</form>
+
+<a href="{% url 'manage_report' %}" class="btn btn-outline-info">Return</a>
+ <table class="table table-hover">
+     {% if messages %}
+        {% for message in messages %}
+      {% if message.tags == 'success' %}
+      <div class="form-group alert alert-success alert-dismissible fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+         <strong>{{ message }}</strong></div>
+         {% endif %}
+       {% if message.tags == 'error' %}
+      <div class="form-group alert alert-danger alert-dismissible fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+         <strong>{{ message }}</strong></div>
+         {% endif %}
+        {% endfor %}
+
+      {% endif %}
+    <thead>
+      <tr>
+        <th>Student</th>
+          <th>Reference</th>
+        <th >Status</th>
+        <th width="12%">Grade</th>
+      </tr>
+    </thead>
+
+    <tbody>
+{% for report in reports %}
+      <tr>
+
+
+
+          <td>{{report.student_id.student.first_name}} {{report.student_id.student.last_name}}</td>
+          <td>
+              {% if report.submission_status != 0 %}
+              <a class="alert-link alert-danger" href="{{report.references}}" target="_blank">Reference</a>
+              {% endif %}
+          </td>
+
+          <td>
+        {% if report.submission_status == 1 %}
+              Submitted
+          {% elif report.submission_status == 2 %}
+              Graded
+              {% endif %}
+            </td>
+
+             <form action="/set_grade" method="post" enctype="multipart/form-data">
+                 {% csrf_token %}
+          <td>
+                    <input type="hidden" class="form-control"  name="submit_id" value="{{ report.id }}">
+                    <input type="hidden" class="form-control"  name="report_id" value="{{ report_id.id }}">
+
+                         {% if report.submission_status == 1 %}
+                   <input type="number"  class="form-control" name="grade" value="{{ report.grade }}" min="0" max="100">
+                        {% elif  report.submission_status == 2%}
+                    <input type="number" class="form-control" name="grade" value="{{ report.grade }}" min="0" max="100">
+
+                     {% endif %}
+          </td>
+                   {% endfor %}
+                 {% if reports %}
+        <div class="form-group">
+    <button type="submit" class="btn btn-outline-info">Set</button>
+       </div>
+                  {% endif %}
+           </form>
+
+      </tr>
+
+    </tbody>
+  </table>
+
+{% endblock %}
+
+{% block custom_js %}
+<script>
+
+
+    </script>
+{% endblock custom_js %}

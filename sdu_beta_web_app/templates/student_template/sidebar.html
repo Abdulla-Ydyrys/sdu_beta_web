@@ -1,0 +1,23 @@
+
+
+<div class="col-2">
+<div class="list-group">
+  {% url 'student_profile' as student_profile %}
+  <a href="{{ student_profile }}" class="list-group-item list-group-item-action {% if request.path == student_profile %} active {% endif %}"><img src="{{ user.students.display_image }}" width="80" >{{ user.username }}</a>
+   {% url 'grades_list' as grades_list %}
+  <a href="{{ grades_list }}" class="list-group-item list-group-item-action {% if request.path == grades_list %} active {% endif %}">Grades List</a>
+
+
+  {% url 'student_registration' as student_registration %}
+  <a href="{{ student_registration }}" class="list-group-item list-group-item-action {% if request.path == student_registration %} active {% endif %}">Registration</a>
+    {% url 'reports' as reports %}
+    {% url 'report_detail' report_id=id as report_detail %}
+  <a href="{{ reports }}" class="list-group-item list-group-item-action {% if request.path == reports %} active {% endif %}
+ {% if request.path == report_detail %} active {% endif %}">Reports</a>
+
+     {% url 'student_feedback' as student_feedback %}
+  <a href="{{ student_feedback }}" class="list-group-item list-group-item-action {% if request.path == student_feedback %} active {% endif %}">Feedback</a>
+
+</div>
+  </div>
+

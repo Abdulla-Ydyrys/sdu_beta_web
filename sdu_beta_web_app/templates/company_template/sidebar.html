@@ -1,0 +1,12 @@
+
+
+<div class="col-2">
+<div class="list-group">
+  {% url 'company_profile' as company_profile %}
+  <a href="{{ company_profile }}" class="list-group-item list-group-item-action {% if request.path == company_profile %} active {% endif %}"><img src="{{ user.company.display_image }}" width="80" >{{ user.username }}</a>
+
+    {% url 'my_interns' as my_interns %}
+  <a href="{{ my_interns }}" class="list-group-item list-group-item-action {% if request.path == my_interns %} active {% endif %}">MY interns</a>
+
+</div>
+  </div>
