@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <title>Registration</title>
+</head>
+
+<body class="text-center">
+  <div class="container col-4 mt-5">
+    <h1 class="mb-5">Registration</h1>
+    <form action="{% url 'signup_staff' %}" method="post">
+      {% csrf_token %} {% block signup_form %}{% endblock signup_form %}<br />
+      <div class="form-group">
+        <button class="btn btn-outline-info" type="submit">Sign up</button>
+      </div>
+
+      {% if messages %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert">
+          &times;
+        </button>
+        {% for message in messages %}
+        {% if message.tags == 'error' %}
+        <strong>{{ message }}</strong>
+        {% endif %}
+        {% endfor %}
+      </div>
+
+      {% endif %}
+    </form>
+  </div>
+</body>
+
+</html>

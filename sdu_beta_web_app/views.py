@@ -7,14 +7,17 @@ from sdu_beta_web_app.Email import Email
 
 # Create your views here.
 
+
 def ShowLogin(request):
     return render(request, "login_page.html")
+
 
 def Signin(request):
     if request.method != "POST":
         return HttpResponseRedirect('/')
     else:
-        user = Email.authenticate(request, username=request.POST.get("email"), password=request.POST.get("password"))
+        user = Email.authenticate(request, username=request.POST.get(
+            "email"), password=request.POST.get("password"))
         if user != None:
             login(request, user)
             if user.user_type == "1":
@@ -29,22 +32,7 @@ def Signin(request):
             messages.error(request, "Не удаётся войти. Пожалуйста, проверьте правильность написания логина и пароля. Возможно, нажата клавиша Caps Lock? Может быть, у Вас включена неправильная раскладка? (русская или английская) Попробуйте набрать свой пароль в текстовом редакторе и скопировать в графу «Пароль» Если Вы всё внимательно проверили, но войти всё равно не удаётся, Вы можете нажать Reset Password.")
             return HttpResponseRedirect("/")
 
+
 def log_out(request):
     logout(request)
     return HttpResponseRedirect("/")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

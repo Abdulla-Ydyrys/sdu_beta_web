@@ -37,6 +37,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 # Application definition
 
 INSTALLED_APPS = [
+    # My Apps
+    'sdu_beta_web_app',
+    'sdu_beta_registration.apps.SduBetaRegistrationConfig',
+    # Installed Apps
+    'django_email_verification',
+    'django_filters',
+    # Django Apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,8 +51,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'django_filters',
-    'sdu_beta_web_app'
 ]
 
 MIDDLEWARE = [
@@ -56,7 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'sdu_beta_web_app.LoginCheckMiddleWare.LoginCheckMiddleWare',
+    # 'sdu_beta_web_app.LoginCheckMiddleWare.LoginCheckMiddleWare',
 ]
 
 ROOT_URLCONF = 'sdu_beta_web.urls'
@@ -85,8 +90,8 @@ WSGI_APPLICATION = 'sdu_beta_web.wsgi.application'
 
 DATABASES = {
     'default': {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'sdu_beta_web',
         'USER': 'dauren',
@@ -136,12 +141,26 @@ USE_TZ = True
 STATIC_URL = '/static/'
 AUTH_USER_MODEL = "sdu_beta_web_app.CustomUser"
 AUTHENTICATION_BACKENDS = ['sdu_beta_web_app.Email.Email']
-DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIl_PORT = 587
-EMAIL_HOST_USER = ""
-EMAIL_HOST_PASSWORD = ""
+
+def user_is_active(user):
+    user.is_active = 1
+
+
+EMAIL_VERIFIED_CALLBACK = user_is_active
+EMAIL_FROM_ADDRESS = '170103134@stu.sdu.edu.kz'
+EMAIL_MAIL_SUBJECT = 'Email confirmation'
+EMAIL_MAIL_HTML = 'mail_body.html'
+EMAIL_MAIL_PLAIN = 'mail_body.txt'
+EMAIL_TOKEN_LIFE = 60 * 60
+EMAIL_PAGE_TEMPLATE = 'confirm_template.html'
+EMAIL_PAGE_DOMAIN = 'http://127.0.0.1:8000/'
+
+# For Django Email Backend
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = '170103134@stu.sdu.edu.kz'
+EMAIL_HOST_PASSWORD = 'awqtlmqgquopevzi'
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = "SDU BETA"

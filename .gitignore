@@ -10,6 +10,7 @@ pyvenv.cfg
 # Distribution / packaging
 .Python
 env/
+venv/
 build/
 develop-eggs/
 dist/
@@ -51,6 +52,8 @@ coverage.xml
 
 # Django stuff:
 *.log
+migrations/*.py
+!migrations/__init__.py
 
 # Sphinx documentation
 docs/_build/

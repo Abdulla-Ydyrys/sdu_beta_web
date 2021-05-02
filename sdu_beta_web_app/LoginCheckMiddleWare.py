@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.deprecation import MiddlewareMixin
 
+
 class LoginCheckMiddleWare(MiddlewareMixin):
 
     @staticmethod
@@ -44,4 +45,5 @@ class LoginCheckMiddleWare(MiddlewareMixin):
             if request.path == reverse("show_login") or request.path == reverse("sign_in") or module_name == "django.contrib.auth.views":
                 pass
             else:
+                print(request.path)
                 return HttpResponseRedirect(reverse("show_login"))

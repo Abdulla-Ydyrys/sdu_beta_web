@@ -1,58 +1,82 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <title>Login page</title>
-
   </head>
 
   <body class="text-center">
-  <div class="container col-4">
-    <form action="/sign_in", method="post">
+    <div class="container col-4">
+      <form action="/sign_in" , method="post">
         {% csrf_token %}
-      <h1>Please sign in</h1>
-      <div class="form-group">
-    <label>Email address:</label>
-      <input class="form-control" type="email" name="email" placeholder="Email address" required autofocus>
-  </div>
-  <div class="form-group">
-    <label>Password:</label>
-     <input class="form-control" type="password" name="password" placeholder="Password" required>
-  </div>
-       <div class="form-group">
-      <button class="btn btn-outline-info" type="submit">Sign in</button>
-       </div>
+        <h1>Please sign in</h1>
+        <div class="form-group">
+          <label>Email address:</label>
+          <input
+            class="form-control"
+            type="email"
+            name="email"
+            placeholder="Email address"
+            required
+            autofocus
+          />
+        </div>
+        <div class="form-group">
+          <label>Password:</label>
+          <input
+            class="form-control"
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <button class="btn btn-outline-info" type="submit">Sign in</button>
+        </div>
 
         <div class="form-group">
-      <a href="{% url 'password_reset' %}" class="btn btn-outline-danger">Reset password</a>
-       </div>
-
+          <a href="{% url 'password_reset' %}" class="btn btn-outline-danger"
+            >Reset password</a
+          >
+        </div>
 
         <div class="form-group">
-      Don't have an account? <a href="{% url 'password_reset' %}" class="btn btn-outline-danger">Sign UP</a>
-       </div>
+          Don't have an account?
+          <a href="{% url 'signup_staff' %}" class="btn btn-outline-danger"
+            >Sign UP</a
+          >
+        </div>
 
-    {% if messages %}
-      <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        {% for message in messages %}
-          {% if message.tags == 'error' %}
-         <strong>{{ message }}</strong>
-         {% endif %}
-        {% endfor %}
-      </div>
-
-      {% endif %}
-
-    </form>
-  </div>
+        <div class="row mt-5">
+          {% if messages %}
+          <div class="col-12">
+            {% for message in messages %} {% if message.tags == 'error' %}
+            <div class="alert alert-danger" style="margin-top: 10px">
+              {{ message }}
+            </div>
+            {% endif %} {% if message.tags == 'success' %}
+            <div class="alert alert-success" style="margin-top: 10px">
+              {{ message }}
+            </div>
+            {% endif %} {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </form>
+    </div>
   </body>
 </html>
