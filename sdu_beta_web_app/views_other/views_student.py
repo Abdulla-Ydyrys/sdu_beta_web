@@ -1,7 +1,6 @@
 
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
+from django.http import HttpResponse
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 
@@ -18,7 +17,7 @@ def student_profile(request):
 
 def update_student_profile(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("student_profile"))
+        return redirect("student_profile")
     else:
         first_name = request.POST.get("first_name")
         last_name = request.POST.get("last_name")
@@ -44,10 +43,10 @@ def update_student_profile(request):
             student.address = address
             student.save()
             messages.success(request, "Successfully Edited student profile")
-            return HttpResponseRedirect(reverse("student_profile"))
+            return redirect("student_profile")
         except:
             messages.error(request, "Failed to Edit student profile")
-            return HttpResponseRedirect(reverse("student_profile"))
+            return redirect("student_profile")
 
 def student_feedback(request):
     student_id = Students.objects.get(student=request.user.id)
@@ -56,7 +55,7 @@ def student_feedback(request):
 
 def save_feedback(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("student_feedback"))
+        return redirect("student_feedback")
     else:
         feedback_message = request.POST.get("feedback")
         student_id = Students.objects.get(student=request.user.id)
@@ -64,10 +63,10 @@ def save_feedback(request):
             feedback = Students_feedback(student_id=student_id, feedback_message=feedback_message, feedback_reply="")
             feedback.save()
             messages.success(request, "Successfully  Send Feedback")
-            return HttpResponseRedirect(reverse("student_feedback"))
+            return redirect("student_feedback")
         except:
             messages.error(request, "Failed to Sent Feedback")
-            return HttpResponseRedirect(reverse("student_feedback"))
+            return redirect("student_feedback")
 
 def student_registration(request):
     student = Students.objects.get(student=request.user.id)
@@ -80,7 +79,7 @@ def student_registration(request):
 @csrf_exempt
 def cancel_registration(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("student_registration"))
+        return redirect("student_registration")
     else:
         try:
             student_id = Students.objects.get(student=request.user.id)
@@ -92,7 +91,7 @@ def cancel_registration(request):
 
 def confirm_registration(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("student_registration"))
+        return redirect("student_registration")
     else:
         if request.FILES.get('agreement', False):
             agreement = request.FILES['agreement']
@@ -112,10 +111,10 @@ def confirm_registration(request):
             registration = Students_registration(student_id=student_id, agreement=agreement_url, supervisor_id=supervisor, registration_status=0, beta_type=beta_type)
             registration.save()
             messages.success(request, "Successfully Confirmed Registration")
-            return HttpResponseRedirect(reverse("student_registration"))
+            return redirect("student_registration")
         except:
             messages.error(request, "Failed to Confirm Registration")
-            return HttpResponseRedirect(reverse("student_registration"))
+            return redirect("student_registration")
 
 def reports(request):
     student = Students.objects.get(student=request.user.id)
@@ -128,7 +127,7 @@ def reports(request):
         return render(request, "student_template/reports.html", {"report": report, "registered": registered})
     else:
         messages.error(request, "You have not registered, or Your request not yet approved(or rejected)")
-        return HttpResponseRedirect(reverse("student_registration"))
+        return redirect("student_registration")
 
 def report_detail(request, report_id):
     check_exist = Reports.objects.filter(id=report_id).exists()
@@ -147,14 +146,14 @@ def report_detail(request, report_id):
         return render(request, "student_template/report_detail.html", {"report": report, "id": report_id, "report_details": report_details})
     elif not registered:
         messages.error(request, "You have not registered, please register first or Your request not yet approved.(or rejected)")
-        return HttpResponseRedirect(reverse("student_registration"))
+        return redirect("student_registration")
     else:
         return redirect('/reports')
 
 @csrf_exempt
 def cancel_report(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("reports"))
+        return redirect("reports")
     else:
         submit_id = request.POST.get("id")
         try:
@@ -162,11 +161,11 @@ def cancel_report(request):
             report.delete()
             return HttpResponse("True")
         except:
-            return HttpResponseRedirect(reverse("reports"))
+            return redirect("reports")
 
 def submit_report(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("reports"))
+        return redirect("reports")
     else:
         report_id = request.POST.get("report_id")
         reference = request.POST.get("reference")
@@ -176,10 +175,10 @@ def submit_report(request):
             report_submit = Report_submitting(student_id=student_id, report_id=report, submission_status=1, references=reference)
             report_submit.save()
             messages.success(request, "Successfully Submitted Report")
-            return HttpResponseRedirect(reverse("report_detail", kwargs={"report_id": report_id}))
+            return redirect("report_detail", kwargs={"report_id": report_id})
         except:
             messages.error(request, "Failed to Submit Report")
-            return HttpResponseRedirect(reverse("report_detail", kwargs={"report_id": report_id}))
+            return redirect("report_detail", kwargs={"report_id": report_id})
 
 def grades_list(request):
     student = Students.objects.get(student=request.user.id)
@@ -208,4 +207,4 @@ def grades_list(request):
         return render(request, "student_template/grades_list.html", {"s_mark": s_mark, "f_mark": f_mark, "grade": grade, "total": total, "supervisor": supervisor, "student": student})
     else:
         messages.error(request, "You have not registered, or Your request not yet approved(or rejected)")
-        return HttpResponseRedirect(reverse("student_registration"))
+        return redirect("student_registration")

@@ -1,7 +1,6 @@
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
+from django.http import HttpResponse
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 
@@ -12,13 +11,15 @@ from sdu_beta_web_app.models import *
 def admin_home(request):
     return render(request, "admin_template/home.html")
 
+
 def admin_profile(request):
     user = CustomUser.objects.get(id=request.user.id)
     return render(request, "admin_template/admin_profile.html", {"user": user})
 
+
 def update_admin_profile(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("admin_profile"))
+        return redirect("admin_profile")
     else:
         first_name = request.POST.get("first_name")
         last_name = request.POST.get("last_name")
@@ -42,10 +43,11 @@ def update_admin_profile(request):
                 admin.display_image = picture_url
             admin.save()
             messages.success(request, "Successfully Edited Admin")
-            return HttpResponseRedirect(reverse("admin_profile"))
+            return redirect("admin_profile")
         except:
             messages.error(request, "Failed to Edit Admin")
-            return HttpResponseRedirect(reverse("admin_profile"))
+            return redirect("admin_profile")
+
 
 def add_staff(request):
     return render(request, "admin_template/add_staff.html")
@@ -53,7 +55,7 @@ def add_staff(request):
 
 def save_staff(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("add_staff"))
+        return redirect("add_staff")
     else:
         email = request.POST.get("email")
         password = request.POST.get("password")
@@ -77,10 +79,10 @@ def save_staff(request):
             user.staffs.display_image = picture_url
             user.save()
             messages.success(request, "Successfully Added Staff")
-            return HttpResponseRedirect(reverse("manage_staff"))
+            return redirect("manage_staff")
         except:
             messages.error(request, "Failed to Add Staff")
-            return HttpResponseRedirect(reverse("add_staff"))
+            return redirect("add_staff")
 
 
 def manage_staff(request):
@@ -98,7 +100,7 @@ def edit_staff(request, staff_id):
 
 def update_staff(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("edit_staff"))
+        return redirect("edit_staff")
     else:
         staff_id = request.POST.get("staff_id")
         email = request.POST.get("email")
@@ -129,10 +131,10 @@ def update_staff(request):
                 staff.display_image = picture_url
             staff.save()
             messages.success(request, "Successfully Edited Staff")
-            return HttpResponseRedirect(reverse("manage_staff"))
+            return redirect("manage_staff")
         except:
             messages.error(request, "Failed to Edit Staff")
-            return HttpResponseRedirect(reverse("edit_staff", kwargs={"staff_id": staff_id}))
+            return redirect("edit_staff", kwargs={"staff_id": staff_id})
 
 
 def delete_staff(request, staff_id):
@@ -152,7 +154,7 @@ def add_company(request):
 
 def save_company(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("add_company"))
+        return redirect("add_company")
     else:
         email = request.POST.get("email")
         password = request.POST.get("password")
@@ -166,15 +168,16 @@ def save_company(request):
         else:
             picture_url = None
         try:
-            user = CustomUser.objects.create_user(email=email, password=password, username=username, user_type=3)
+            user = CustomUser.objects.create_user(
+                email=email, password=password, username=username, user_type=3)
             user.company.address = address
             user.company.display_image = picture_url
             user.save()
             messages.success(request, "Successfully Added Company")
-            return HttpResponseRedirect(reverse("manage_company"))
+            return redirect("manage_company")
         except:
             messages.error(request, "Failed to Add Company")
-            return HttpResponseRedirect(reverse("add_company"))
+            return redirect("add_company")
 
 
 def manage_company(request):
@@ -189,9 +192,10 @@ def edit_company(request, company_id):
     except:
         return redirect('/manage_company')
 
+
 def update_company(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("edit_company"))
+        return redirect("edit_company")
     else:
         company_id = request.POST.get("company_id")
         email = request.POST.get("email")
@@ -216,10 +220,10 @@ def update_company(request):
                 company.display_image = picture_url
             company.save()
             messages.success(request, "Successfully Edited Company")
-            return HttpResponseRedirect(reverse("manage_company"))
+            return redirect("manage_company")
         except:
             messages.error(request, "Failed to Edit Company")
-            return HttpResponseRedirect(reverse("edit_company", kwargs={"company_id": company_id}))
+            return redirect("edit_company", kwargs={"company_id": company_id})
 
 
 def delete_company(request, company_id):
@@ -239,7 +243,7 @@ def add_student(request):
 
 def save_student(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("add_student"))
+        return redirect("add_student")
     else:
         email = request.POST.get("email")
         password = request.POST.get("password")
@@ -264,10 +268,10 @@ def save_student(request):
             user.students.display_image = picture_url
             user.save()
             messages.success(request, "Successfully Added Student")
-            return HttpResponseRedirect(reverse("manage_student"))
+            return redirect("manage_student")
         except:
             messages.error(request, "Failed to Add Student")
-            return HttpResponseRedirect(reverse("add_student"))
+            return redirect("add_student")
 
 
 def manage_student(request):
@@ -282,9 +286,10 @@ def edit_student(request, student_id):
     except:
         return redirect('/manage_student')
 
+
 def update_student(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("edit_student"))
+        return redirect("edit_student")
     else:
         student_id = request.POST.get("student_id")
         email = request.POST.get("email")
@@ -315,10 +320,10 @@ def update_student(request):
                 student.display_image = picture_url
             student.save()
             messages.success(request, "Successfully Edited Student")
-            return HttpResponseRedirect(reverse("manage_student"))
+            return redirect("manage_student")
         except:
             messages.error(request, "Failed to Edit Student")
-            return HttpResponseRedirect(reverse("edit_student", kwargs={"student_id": student_id}))
+            return redirect("edit_student", kwargs={"student_id": student_id})
 
 
 def delete_student(request, student_id):
@@ -336,6 +341,7 @@ def feedback_messages(request):
     feedbacks = Students_feedback.objects.all()
     return render(request, "admin_template/feedback_messages.html", {"feedbacks": feedbacks})
 
+
 @csrf_exempt
 def feedback_reply(request):
     feedback_id = request.POST.get("id")
@@ -346,21 +352,22 @@ def feedback_reply(request):
         feedback.save()
         return HttpResponse("True")
     except:
-        return HttpResponseRedirect(reverse("feedback_messages"))
+        return redirect("feedback_messages")
+
 
 def set_end_date(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("manage_registration"))
+        return redirect("manage_registration")
     else:
         end_date = request.POST.get("expiry_date")
         try:
             exp_date = Expiration_date(end_date=end_date)
             exp_date.save()
             messages.success(request, "Successfully set registration date")
-            return HttpResponseRedirect(reverse("manage_registration"))
+            return redirect("manage_registration")
         except:
             messages.error(request, "Failed To set registration date")
-            return HttpResponseRedirect(reverse("manage_registration"))
+            return redirect("manage_registration")
 
 
 def manage_registration(request):
@@ -369,6 +376,7 @@ def manage_registration(request):
     registrations = my_filter.qs
     exp_date = Expiration_date.objects.last()
     return render(request, "admin_template/manage_registration.html", {"registrations": registrations, "exp_date": exp_date, "my_filter": my_filter})
+
 
 def reg_approve(request, student_id):
     try:
@@ -379,6 +387,7 @@ def reg_approve(request, student_id):
     except:
         return redirect('/manage_registration')
 
+
 def reg_reject(request, student_id):
     try:
         registration = Students_registration.objects.get(student_id=student_id)
@@ -387,6 +396,7 @@ def reg_reject(request, student_id):
         return redirect('/manage_registration')
     except:
         return redirect('/manage_registration')
+
 
 def reg_cancel(request, student_id):
     try:
@@ -398,6 +408,7 @@ def reg_cancel(request, student_id):
     except:
         return redirect('/manage_registration')
 
+
 @csrf_exempt
 def reject_reply(request):
     registration_id = request.POST.get("id")
@@ -408,30 +419,35 @@ def reject_reply(request):
         registration.save()
         return HttpResponse("True")
     except:
-        return HttpResponseRedirect(reverse("manage_registration"))
+        return redirect("manage_registration")
+
 
 def add_report(request):
     return render(request, "admin_template/add_report.html")
 
+
 def save_report(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("add_report"))
+        return redirect("add_report")
     else:
         report_name = request.POST.get("report_name")
         report_detail = request.POST.get("report_detail")
         due_date = request.POST.get("due_date")
         try:
-            report = Reports(report_name=report_name, report_detail=report_detail, due_date=due_date)
+            report = Reports(report_name=report_name,
+                             report_detail=report_detail, due_date=due_date)
             report.save()
             messages.success(request, "Successfully Added Report")
-            return HttpResponseRedirect(reverse("manage_report"))
+            return redirect("manage_report")
         except:
             messages.error(request, "Failed to Add Report")
-            return HttpResponseRedirect(reverse("add_report"))
+            return redirect("add_report")
+
 
 def manage_report(request):
     reports = Reports.objects.all()
     return render(request, "admin_template/manage_report.html", {"reports": reports})
+
 
 def edit_report(request, report_id):
     try:
@@ -440,9 +456,10 @@ def edit_report(request, report_id):
     except:
         return redirect('/manage_report')
 
+
 def update_report(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("manage_report"))
+        return redirect("manage_report")
     else:
         report_id = request.POST.get("report_id")
         report_name = request.POST.get("report_name")
@@ -455,20 +472,22 @@ def update_report(request):
             report.due_date = due_date
             report.save()
             messages.success(request, "Successfully Updated Report")
-            return HttpResponseRedirect(reverse("manage_report"))
+            return redirect("manage_report")
         except:
             messages.error(request, "Failed to Updated Report")
-            return HttpResponseRedirect(reverse("manage_report"))
+            return redirect("manage_report")
+
 
 def delete_report(request, report_id):
     try:
         report = Reports.objects.get(id=report_id)
         report.delete()
         messages.success(request, "Report is deleted")
-        return HttpResponseRedirect(reverse("manage_report"))
+        return redirect("manage_report")
     except:
         messages.error(request, "Report doesn't exist")
-        return HttpResponseRedirect(reverse("manage_report"))
+        return redirect("manage_report")
+
 
 def view_report(request, report_id):
     reports = Report_submitting.objects.filter(report_id=report_id)
@@ -477,9 +496,10 @@ def view_report(request, report_id):
     report_id = Reports.objects.get(id=report_id)
     return render(request, "admin_template/view_report.html", {"reports": reports, "report_id": report_id, "my_filter": my_filter})
 
+
 def set_grade(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("manage_report"))
+        return redirect("manage_report")
     else:
         report_id = request.POST.get("report_id")
         try:
@@ -496,10 +516,10 @@ def set_grade(request):
                     submit_report.submission_status = 2
                     submit_report.save()
             messages.success(request, "Successfully Set Grade")
-            return HttpResponseRedirect(reverse("view_report", kwargs={"report_id": report_id}))
+            return redirect("view_report", kwargs={"report_id": report_id})
         except:
             messages.error(request, "Failed to Set Grade")
-            return HttpResponseRedirect(reverse("view_report", kwargs={"report_id": report_id}))
+            return redirect("view_report", kwargs={"report_id": report_id})
 
 
 def grades(request):
@@ -507,6 +527,7 @@ def grades(request):
     my_filter = RegistrationFilter(request.GET, queryset=registrations)
     registrations = my_filter.qs
     return render(request, "admin_template/grades.html", {"registrations": registrations, "my_filter": my_filter})
+
 
 def view_grade(request, student_id):
     try:
@@ -536,35 +557,37 @@ def view_grade(request, student_id):
         total = round(total)
         return render(request, "admin_template/grades_list.html", {"s_mark": s_mark, "f_mark": f_mark, "grade": grade, "total": total, "supervisor": supervisor, "id": student_id, "student": student, "grade_list": grade_list})
     else:
-        return HttpResponseRedirect(reverse("grades"))
+        return redirect("grades")
+
 
 @csrf_exempt
 def set_final_grade(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("grades"))
+        return redirect("grades")
     else:
-            grade_id = request.POST.get("grade_id")
-            student_id = request.POST.get("student_id")
-            final_grade = request.POST.get("final_grade")
-            try:
-                grade = Grades_List.objects.get(id=grade_id)
-                grade.final_marks = final_grade
-                grade.save()
-                return HttpResponse("True")
-            except:
-                return HttpResponseRedirect(reverse("view_grade", kwargs={"student_id": student_id}))
+        grade_id = request.POST.get("grade_id")
+        student_id = request.POST.get("student_id")
+        final_grade = request.POST.get("final_grade")
+        try:
+            grade = Grades_List.objects.get(id=grade_id)
+            grade.final_marks = final_grade
+            grade.save()
+            return HttpResponse("True")
+        except:
+            return redirect("view_grade", kwargs={"student_id": student_id})
+
 
 @csrf_exempt
 def reset_final_grade(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("grades"))
+        return redirect("grades")
     else:
-            grade_id = request.POST.get("grade_id")
-            student_id = request.POST.get("student_id")
-            try:
-                grade = Grades_List.objects.get(id=grade_id)
-                grade.final_marks = 0
-                grade.save()
-                return HttpResponse("True")
-            except:
-                return HttpResponseRedirect(reverse("view_grade", kwargs={"student_id": student_id}))
+        grade_id = request.POST.get("grade_id")
+        student_id = request.POST.get("student_id")
+        try:
+            grade = Grades_List.objects.get(id=grade_id)
+            grade.final_marks = 0
+            grade.save()
+            return HttpResponse("True")
+        except:
+            return redirect("view_grade", kwargs={"student_id": student_id})

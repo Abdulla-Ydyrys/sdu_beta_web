@@ -3,8 +3,6 @@ import re
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
 
 from django_email_verification import send_email
 

@@ -1,7 +1,5 @@
 
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
 from django.contrib import messages
 from sdu_beta_web_app.models import *
 from django.core.files.storage import FileSystemStorage
@@ -10,13 +8,15 @@ from django.core.files.storage import FileSystemStorage
 def company_home(request):
     return render(request, "company_template/home.html")
 
+
 def company_profile(request):
     user = CustomUser.objects.get(id=request.user.id)
     return render(request, "company_template/company_profile.html", {"user": user})
 
+
 def update_company_profile(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("company_profile"))
+        return redirect("company_profile")
     else:
         username = request.POST.get("username")
         address = request.POST.get("address")
@@ -37,15 +37,18 @@ def update_company_profile(request):
             company.address = address
             company.save()
             messages.success(request, "Successfully Edited company profile")
-            return HttpResponseRedirect(reverse("company_profile"))
+            return redirect("company_profile")
         except:
             messages.error(request, "Failed to Edit company profile")
-            return HttpResponseRedirect(reverse("company_profile"))
+            return redirect("company_profile")
+
 
 def my_interns(request):
     supervisor = CustomUser.objects.get(id=request.user.id)
-    reg = Students_registration.objects.filter(supervisor_id=supervisor.id, registration_status=1)
-    studentList = Students_registration.objects.filter(supervisor_id=supervisor.id, registration_status=1).values_list('student_id', flat=True)
+    reg = Students_registration.objects.filter(
+        supervisor_id=supervisor.id, registration_status=1)
+    studentList = Students_registration.objects.filter(
+        supervisor_id=supervisor.id, registration_status=1).values_list('student_id', flat=True)
     for s in studentList:
         student = Students.objects.get(id=s)
         try:
@@ -56,9 +59,10 @@ def my_interns(request):
     grades_list = Grades_List.objects.filter(student_id__in=studentList)
     return render(request, "company_template/my_interns.html", {"reg": reg, "grades_list": grades_list, "studentList": studentList})
 
+
 def company_grade(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("my_interns"))
+        return redirect("my_interns")
     else:
         try:
             reg_id = request.POST.getlist("reg_id")
@@ -71,10 +75,11 @@ def company_grade(request):
                     grades_list.supervisor_marks = g
                     grades_list.save()
                 except Grades_List.DoesNotExist:
-                    grades_list = Grades_List(student_id=student, supervisor_marks=g)
+                    grades_list = Grades_List(
+                        student_id=student, supervisor_marks=g)
                     grades_list.save()
             messages.success(request, "Successfully Set Grade")
-            return HttpResponseRedirect(reverse("my_interns"))
+            return redirect("my_interns")
         except:
             messages.error(request, "Failed to Set Grade")
-            return HttpResponseRedirect(reverse("my_interns"))
+            return redirect("my_interns")

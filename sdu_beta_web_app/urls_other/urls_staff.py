@@ -1,7 +1,7 @@
 # Django imports
 from django.urls import path
 # My apps imports
-from sdu_beta_web_app.views import views_staff
+from sdu_beta_web_app.views_other import views_staff
 
 urlpatterns = [
     path('home/', views_staff.staff_home, name="staff_home"),

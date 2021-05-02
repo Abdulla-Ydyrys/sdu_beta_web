@@ -1,7 +1,7 @@
 # Django imports
 from django.urls import path
 # My apps imports
-from sdu_beta_web_app.views import views_admin
+from sdu_beta_web_app.views_other import views_admin
 
 urlpatterns = [
     path('home/', views_admin.admin_home, name="admin_home"),

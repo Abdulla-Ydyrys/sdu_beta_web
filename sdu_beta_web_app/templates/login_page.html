@@ -20,14 +20,14 @@
 
   <body class="text-center">
     <div class="container col-4">
-      <form action="/sign_in" , method="post">
+      <form action="{% url 'signin' %}" , method="post">
         {% csrf_token %}
         <h1>Please sign in</h1>
         <div class="form-group">
           <label>Email address:</label>
           <input
             class="form-control"
-            type="email"
+            type="text"
             name="email"
             placeholder="Email address"
             required

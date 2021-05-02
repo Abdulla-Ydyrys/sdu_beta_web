@@ -1,10 +1,9 @@
 
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
 from django.contrib import messages
 from sdu_beta_web_app.models import *
 from django.core.files.storage import FileSystemStorage
+
 
 def staff_home(request):
     return render(request, "staff_template/home.html")
@@ -14,9 +13,10 @@ def staff_profile(request):
     user = CustomUser.objects.get(id=request.user.id)
     return render(request, "staff_template/staff_profile.html", {"user": user})
 
+
 def update_staff_profile(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("staff_profile"))
+        return redirect("staff_profile")
     else:
         first_name = request.POST.get("first_name")
         last_name = request.POST.get("last_name")
@@ -42,15 +42,18 @@ def update_staff_profile(request):
             staff.address = address
             staff.save()
             messages.success(request, "Successfully Edited Staff Profile")
-            return HttpResponseRedirect(reverse("staff_profile"))
+            return redirect("staff_profile")
         except:
             messages.error(request, "Failed to Edit Staff Profile")
-            return HttpResponseRedirect(reverse("staff_profile"))
+            return redirect("staff_profile")
+
 
 def my_students(request):
     supervisor = CustomUser.objects.get(id=request.user.id)
-    reg = Students_registration.objects.filter(supervisor_id=supervisor.id, registration_status=1)
-    studentList = Students_registration.objects.filter(supervisor_id=supervisor.id, registration_status=1).values_list('student_id', flat=True)
+    reg = Students_registration.objects.filter(
+        supervisor_id=supervisor.id, registration_status=1)
+    studentList = Students_registration.objects.filter(
+        supervisor_id=supervisor.id, registration_status=1).values_list('student_id', flat=True)
     for s in studentList:
         student = Students.objects.get(id=s)
         try:
@@ -61,9 +64,10 @@ def my_students(request):
     grades_list = Grades_List.objects.filter(student_id__in=studentList)
     return render(request, "staff_template/my_students.html", {"reg": reg, "grades_list": grades_list, "studentList": studentList})
 
+
 def supervisor_grade(request):
     if request.method != "POST":
-        return HttpResponseRedirect(reverse("my_students"))
+        return redirect("my_students")
     else:
         try:
             reg_id = request.POST.getlist("reg_id")
@@ -76,13 +80,11 @@ def supervisor_grade(request):
                     grades_list.supervisor_marks = g
                     grades_list.save()
                 except Grades_List.DoesNotExist:
-                    grades_list = Grades_List(student_id=student, supervisor_marks=g)
+                    grades_list = Grades_List(
+                        student_id=student, supervisor_marks=g)
                     grades_list.save()
             messages.success(request, "Successfully Set Grade")
-            return HttpResponseRedirect(reverse("my_students"))
+            return redirect("my_students")
         except:
             messages.error(request, "Failed to Set Grade")
-            return HttpResponseRedirect(reverse("my_students"))
-
-
-
+            return redirect("my_students")

@@ -1,38 +1,34 @@
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
-from django.urls import reverse
 from django.contrib import messages
 from sdu_beta_web_app.Email import Email
 
-# Create your views here.
 
-
-def ShowLogin(request):
+def show_login(request):
     return render(request, "login_page.html")
 
 
-def Signin(request):
+def signin(request):
     if request.method != "POST":
-        return HttpResponseRedirect('/')
+        return redirect('show_login')
     else:
         user = Email.authenticate(request, username=request.POST.get(
             "email"), password=request.POST.get("password"))
         if user != None:
             login(request, user)
             if user.user_type == "1":
-                return HttpResponseRedirect('/admin_home')
+                return redirect('admin_home')
             elif user.user_type == "2":
-                return HttpResponseRedirect(reverse("staff_home"))
+                return redirect("staff_home")
             elif user.user_type == "3":
-                return HttpResponseRedirect(reverse("company_home"))
+                return redirect("company_home")
             else:
-                return HttpResponseRedirect(reverse("student_home"))
+                return redirect("student_home")
         else:
             messages.error(request, "Не удаётся войти. Пожалуйста, проверьте правильность написания логина и пароля. Возможно, нажата клавиша Caps Lock? Может быть, у Вас включена неправильная раскладка? (русская или английская) Попробуйте набрать свой пароль в текстовом редакторе и скопировать в графу «Пароль» Если Вы всё внимательно проверили, но войти всё равно не удаётся, Вы можете нажать Reset Password.")
-            return HttpResponseRedirect("/")
+            return redirect('show_login')
 
 
-def log_out(request):
+def logout(request):
     logout(request)
-    return HttpResponseRedirect("/")
+    return redirect('show_login')
