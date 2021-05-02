@@ -11,28 +11,28 @@ class LoginCheckMiddleWare(MiddlewareMixin):
         user = request.user
         if user.is_authenticated:
             if user.user_type == "1":
-                if module_name == "sdu_beta_web_app.AdminViews":
+                if module_name == "sdu_beta_web_app.views_admin":
                     pass
                 elif module_name == "sdu_beta_web_app.views" or module_name == "django.views.static":
                     pass
                 else:
                     return HttpResponseRedirect(reverse("admin_home"))
             elif user.user_type == "2":
-                if module_name == "sdu_beta_web_app.StaffViews":
+                if module_name == "sdu_beta_web_app.views_staff":
                     pass
                 elif module_name == "sdu_beta_web_app.views" or module_name == "django.views.static":
                     pass
                 else:
                     return HttpResponseRedirect(reverse("staff_home"))
             elif user.user_type == "3":
-                if module_name == "sdu_beta_web_app.CompanyViews":
+                if module_name == "sdu_beta_web_app.views_company":
                     pass
                 elif module_name == "sdu_beta_web_app.views" or module_name == "django.views.static":
                     pass
                 else:
                     return HttpResponseRedirect(reverse("company_home"))
             elif user.user_type == "4":
-                if module_name == "sdu_beta_web_app.StudentViews":
+                if module_name == "sdu_beta_web_app.views_student":
                     pass
                 elif module_name == "sdu_beta_web_app.views" or module_name == "django.views.static":
                     pass
