@@ -1,0 +1,13 @@
+{% extends 'templates_error/error_base.html' %} {% block main_content %}
+<div class="jumbotron">
+  <h1 class="display-4">Error 404!</h1>
+  <p class="lead">Something went wrong</p>
+  <hr class="my-4" />
+  <p>Please check the url</p>
+  <p class="lead">
+    <a class="btn btn-primary" href="{% url 'show_login' %}" role="button"
+      >Or go to Home page</a
+    >
+  </p>
+</div>
+{% endblock main_content %}

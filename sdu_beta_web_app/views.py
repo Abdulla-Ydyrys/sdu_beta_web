@@ -22,13 +22,18 @@ def signin(request):
                 return redirect("staff_home")
             elif user.user_type == "3":
                 return redirect("company_home")
-            else:
+            elif user.user_type == "4":
                 return redirect("student_home")
         else:
             messages.error(request, "Не удаётся войти. Пожалуйста, проверьте правильность написания логина и пароля. Возможно, нажата клавиша Caps Lock? Может быть, у Вас включена неправильная раскладка? (русская или английская) Попробуйте набрать свой пароль в текстовом редакторе и скопировать в графу «Пароль» Если Вы всё внимательно проверили, но войти всё равно не удаётся, Вы можете нажать Reset Password.")
             return redirect('show_login')
 
 
-def logout(request):
+def log_out(request):
     logout(request)
     return redirect('show_login')
+
+
+def error_404_view(request, exception):
+    context = {'user': request.user}
+    return render(request, 'templates_error/error_404.html', context)

@@ -6,5 +6,5 @@ from sdu_beta_web_app import views
 urlpatterns = [
     path('', views.show_login, name="show_login"),
     path('signin/', views.signin, name="signin"),
-    path('logout/', views.logout, name="logout"),
+    path('logout/', views.log_out, name="logout"),
 ]

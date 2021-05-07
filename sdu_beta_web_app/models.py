@@ -5,8 +5,6 @@ from django.dispatch import receiver
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 
-# Create your models here.
-
 class CustomUser(AbstractUser):
     user_types = ((1, "Admin"), (2, "Staff"), (3, "Company"), (4, "Student"))
     user_type = models.CharField(default=1, choices=user_types, max_length=10)

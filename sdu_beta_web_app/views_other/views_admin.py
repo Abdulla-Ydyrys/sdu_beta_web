@@ -1,11 +1,13 @@
+# Django imports
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
-
-from sdu_beta_web_app.filters import RegistrationFilter, StudentFilter, ReportFilter
+# My app imports
 from sdu_beta_web_app.models import *
+from sdu_beta_web_app.filters import RegistrationFilter, StudentFilter, ReportFilter
+from sdu_beta_web_app.tables import tables_admin as tables
 
 
 def admin_home(request):
@@ -86,8 +88,9 @@ def save_staff(request):
 
 
 def manage_staff(request):
-    staffs = Staffs.objects.all()
-    return render(request, "admin_template/manage_staff.html", {"staffs": staffs})
+    table = tables.StaffsTable(Staffs.objects.all())
+    context = {'table': table}
+    return render(request, "admin_template/manage_staff.html", context)
 
 
 def edit_staff(request, staff_id):
@@ -284,7 +287,7 @@ def edit_student(request, student_id):
         student = Students.objects.get(student=student_id)
         return render(request, "admin_template/edit_student.html", {"student": student, "id": student_id})
     except:
-        return redirect('/manage_student')
+        return redirect('manage_student')
 
 
 def update_student(request):
