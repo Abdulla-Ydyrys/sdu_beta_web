@@ -3,6 +3,7 @@
 __pycache__/
 *.py[cod]
 pyvenv.cfg
+.idea/
 
 # C extensions
 *.so
@@ -60,3 +61,4 @@ docs/_build/
 
 # PyBuilder
 target/
+/media/

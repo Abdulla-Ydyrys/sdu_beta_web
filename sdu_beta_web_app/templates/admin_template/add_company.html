@@ -23,7 +23,7 @@
       {% endif %}
 
 
-  <form action="/save_company" method="post" enctype="multipart/form-data">
+  <form action="{% url 'save_company' %}" method="post" enctype="multipart/form-data">
       {% csrf_token %}
     <div class="form-group">
       <label >Email:</label>

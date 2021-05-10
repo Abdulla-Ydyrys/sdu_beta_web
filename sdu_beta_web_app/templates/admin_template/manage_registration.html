@@ -2,182 +2,187 @@
 
 {% block main_content %}
 
-<h1>Manage Registration</h1>
+    <h1>Manage Registration</h1>
 
 
-<form action="/set_end_date" method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-<div class="form-group col-5">
-      <label >Choose end of registration date:</label>
-      <input type="datetime-local" class="form-control"  name="expiry_date" value="{{exp_date.end_date|date:'Y-m-d\TH:i'}}">
-</div>
-
-       <div class="form-group col-2">
-    <button type="submit" class="btn btn-primary">Set date</button>
-       </div>
-  </form>
-
-<form method="get">
-    <div class="container">
-    <div class="row ">
-
-    <div class="form-group">
-      <label for="id_student_id">Search by student ID</label>
-        <input type="text" class="form-control" name="student_id" id="id_student_id">
-    </div>
-
-     <div class="form-group offset-md-1">
-      <label for="id_beta_type">Beta type:</label>
-        <select class="form-control" name="beta_type" id="id_beta_type">
-        <option value="">---------</option>
-        <option value="SDU Beta">SDU Beta</option>
-        <option value="Academic Beta">Academic Beta</option>
-        <option value="Industrial Beta">Industrial Beta</option>
-    </select>
-     </div>
-
-      <div class="form-group offset-md-1">
-      <label for="id_registration_status">Registrations Status</label>
-        <select class="form-control" name="registration_status" id="id_registration_status">
-        <option value="">---------</option>
-         <option value="0">Pending</option>
-            <option value="1">Approved</option>
-            <option value="2">Rejected</option>
-
-    </select>
-     </div>
-
-        <div class="offset-md-1" style="padding-top:30px;">
-    <button type="submit" class="btn btn-outline-info">Search</button>
-              </div>
-         </div>
+    <form action="{% url 'set_end_date' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group col-5">
+            <label>Choose end of registration date:</label>
+            <input type="datetime-local" class="form-control" name="expiry_date"
+                   value="{{ exp_date.end_date|date:'Y-m-d\TH:i' }}">
         </div>
-</form>
 
-{% if messages %}
+        <div class="form-group col-2">
+            <button type="submit" class="btn btn-primary">Set date</button>
+        </div>
+    </form>
+
+    <form method="get">
+        <div class="container">
+            <div class="row ">
+
+                <div class="form-group">
+                    <label for="id_student_id">Search by student ID</label>
+                    <input type="text" class="form-control" name="student_id" id="id_student_id">
+                </div>
+
+                <div class="form-group offset-md-1">
+                    <label for="id_beta_type">Beta type:</label>
+                    <select class="form-control" name="beta_type" id="id_beta_type">
+                        <option value="">---------</option>
+                        <option value="SDU Beta">SDU Beta</option>
+                        <option value="Academic Beta">Academic Beta</option>
+                        <option value="Industrial Beta">Industrial Beta</option>
+                    </select>
+                </div>
+
+                <div class="form-group offset-md-1">
+                    <label for="id_registration_status">Registrations Status</label>
+                    <select class="form-control" name="registration_status" id="id_registration_status">
+                        <option value="">---------</option>
+                        <option value="0">Pending</option>
+                        <option value="1">Approved</option>
+                        <option value="2">Rejected</option>
+
+                    </select>
+                </div>
+
+                <div class="offset-md-1" style="padding-top:30px;">
+                    <button type="submit" class="btn btn-outline-info">Search</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {% if messages %}
         {% for message in messages %}
-          {% if message.tags == 'error' %}
-      <div class="form-group alert alert-warning alert-dismissible fade show" role="alert">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-         <strong>{{ message }}</strong></div>
-         {% endif %}
-      {% if message.tags == 'success' %}
-      <div class="form-group alert alert-success alert-dismissible fade show" role="alert">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-         <strong>{{ message }}</strong></div>
-         {% endif %}
+            {% if message.tags == 'error' %}
+                <div class="form-group alert alert-warning alert-dismissible fade show" role="alert">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>{{ message }}</strong></div>
+            {% endif %}
+            {% if message.tags == 'success' %}
+                <div class="form-group alert alert-success alert-dismissible fade show" role="alert">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>{{ message }}</strong></div>
+            {% endif %}
         {% endfor %}
-      {% endif %}
+    {% endif %}
 
- <table class="table table-hover">
+    <table class="table table-hover">
 
-    <thead>
-      <tr>
-        <th hidden>ID</th>
-        <th>Name</th>
-          <th>SDU ID</th>
-        <th>Supervisor</th>
-        <th>Beta type</th>
-        <th>Agreement</th>
-        <th>Action</th>
-        <th width="10%"></th>
-      </tr>
-    </thead>
-    <tbody>
-     {% for registration in registrations %}
-      <tr>
-          <td hidden>{{ registration.id }}</td>
-        <td>{{ registration.student_id.student.first_name }} {{ registration.student_id.student.last_name }}</td>
-          <td>{{ registration.student_id.student.username }}</td>
-        <td>{{ registration.supervisor_id.username }}</td>
-        <td>{{ registration.beta_type }}</td>
-        <td><a href="{{ registration.agreement }}" download>Download</a></td>
-        <td> {% if registration.registration_status == 0 %}
-            <a href="{% url 'reg_approve' student_id=registration.student_id.id %}" class="btn btn-outline-info">Approve</a>
-            <a href="{% url 'reg_reject' student_id=registration.student_id.id %}" class="btn btn-outline-danger">Reject</a>
-            {% elif registration.registration_status == 1 %}
-             <span class="alert alert-success">Approved</span>
-            <a href="{% url 'reg_cancel' student_id=registration.student_id.id %}" class="btn btn-outline-danger">Cancel</a>
-            {% else %}
-             <span class="alert alert-danger">Rejected</span>
-            <a href="{% url 'reg_cancel' student_id=registration.student_id.id %}" class="btn btn-outline-danger">Cancel</a>
-        </td>
-          <td>
-               {% if registration.reject_reason == "" %}
-              <a href="" class="btn btn-outline-info reply_open_modal" data-toggle="modal" data-target="#myModal">Specify Reason</a>
-                 {% else %}
-             <span>REASON: </span> {{ registration.reject_reason}}
-            {% endif %}
-            {% endif %}
-        </td>
-      </tr>
+        <thead>
+        <tr>
+            <th hidden>ID</th>
+            <th>Name</th>
+            <th>SDU ID</th>
+            <th>Supervisor</th>
+            <th>Beta type</th>
+            <th>Agreement</th>
+            <th>Action</th>
+            <th width="10%"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for registration in registrations %}
+            <tr>
+                <td hidden>{{ registration.id }}</td>
+                <td>{{ registration.student_id.student.first_name }} {{ registration.student_id.student.last_name }}</td>
+                <td>{{ registration.student_id.student.username }}</td>
+                <td>{{ registration.supervisor_id.username }}</td>
+                <td>{{ registration.beta_type }}</td>
+                <td><a href="{{ registration.agreement }}" download>Download</a></td>
+                <td> {% if registration.registration_status == 0 %}
+                    <a href="{% url 'reg_approve' student_id=registration.student_id.id %}"
+                       class="btn btn-outline-info">Approve</a>
+                    <a href="{% url 'reg_reject' student_id=registration.student_id.id %}"
+                       class="btn btn-outline-danger">Reject</a>
+                {% elif registration.registration_status == 1 %}
+                    <span class="alert alert-success">Approved</span>
+                    <a href="{% url 'reg_cancel' student_id=registration.student_id.id %}"
+                       class="btn btn-outline-danger">Cancel</a>
+                {% else %}
+                    <span class="alert alert-danger">Rejected</span>
+                    <a href="{% url 'reg_cancel' student_id=registration.student_id.id %}"
+                       class="btn btn-outline-danger">Cancel</a>
+                    </td>
+                    <td>
+                    {% if registration.reject_reason == "" %}
+                        <a href="" class="btn btn-outline-info reply_open_modal" data-toggle="modal"
+                           data-target="#myModal">Specify Reason</a>
+                    {% else %}
+                        <span>REASON: </span> {{ registration.reject_reason }}
+                    {% endif %}
+                {% endif %}
+                    </td>
+            </tr>
 
-     {% endfor %}
-    </tbody>
-  </table>
+        {% endfor %}
+        </tbody>
+    </table>
 
- <div class="modal fade" id="myModal">
-    <div class="modal-dialog">
-      <div class="modal-content">
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
 
-        <!-- Modal Header -->
-        <div class="modal-header">
-          <h4 class="modal-title">Specify Reject Reason TO  <span id="reply_to"></span> </h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Specify Reject Reason TO <span id="reply_to"></span></h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <input type="hidden" id="reply_id">
+                    <textarea class="form-control" rows="5" name="feedback" id="reply_message"></textarea>
+
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-info" id="reply_button">Reply</button>
+                </div>
+            </div>
         </div>
-
-        <!-- Modal body -->
-        <div class="modal-body">
-         <input type="hidden" id="reply_id">
-          <textarea class="form-control" rows="5" name="feedback" id="reply_message"></textarea>
-
-        </div>
-
-        <!-- Modal footer -->
-        <div class="modal-footer">
-           <button type="button" class="btn btn-outline-info" id="reply_button">Reply</button>
-        </div>
-      </div>
     </div>
-  </div>
 
 
 {% endblock %}
 
 {% block custom_js %}
-<script>
-    $(document).ready(function(){
-        $(".reply_open_modal").click(function(){
-            var id = $(this).parents("tr").children("td:eq(0)").text();
-            var name = $(this).parents("tr").children("td:eq(1)").text();
-            $("#reply_id").val(id);
-            $("#reply_to").text(name);
-        });
-        $(document).on("click","#reply_button",function(){
-                $(this).attr("disabled","disabled")
+    <script>
+        $(document).ready(function () {
+            $(".reply_open_modal").click(function () {
+                var id = $(this).parents("tr").children("td:eq(0)").text();
+                var name = $(this).parents("tr").children("td:eq(1)").text();
+                $("#reply_id").val(id);
+                $("#reply_to").text(name);
+            });
+            $(document).on("click", "#reply_button", function () {
+                $(this).attr("disabled", "disabled")
                 $(this).text("Sending Reply...")
 
-                var id=$("#reply_id").val();
-                var message=$("#reply_message").val()
+                var id = $("#reply_id").val();
+                var message = $("#reply_message").val()
                 $.ajax({
-                        url:'{% url 'reject_reply' %}',
-                        type:'POST',
-                        data:{id:id,message:message},
-                    })
-                    .done(function(response){
-                        if(response=="True"){
-                             alert("Reply Sent")
-                        }
-                        else{
+                    url: '{% url 'reject_reply' %}',
+                    type: 'POST',
+                    data: {id: id, message: message},
+                })
+                    .done(function (response) {
+                        if (response == "True") {
+                            alert("Reply Sent")
+                        } else {
                             alert("Error in Sending Reply")
                         }
                         location.reload()
                     })
-                    .fail(function(){
+                    .fail(function () {
                         alert("Error in Sending Reply")
                     })
-           });
+            });
 
-    });
-</script>
+        });
+    </script>
 {% endblock custom_js %}

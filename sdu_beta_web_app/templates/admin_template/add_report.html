@@ -19,7 +19,7 @@
         {% endfor %}
       {% endif %}
 
-  <form action="/save_report" method="post" enctype="multipart/form-data">
+  <form action="{% url 'save_report' %}" method="post" enctype="multipart/form-data">
       {% csrf_token %}
     <div class="form-group">
       <label >Report Name</label>

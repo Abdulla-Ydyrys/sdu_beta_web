@@ -46,7 +46,7 @@ def update_admin_profile(request):
             admin.save()
             messages.success(request, "Successfully Edited Admin")
             return redirect("admin_profile")
-        except:
+        except Exception:
             messages.error(request, "Failed to Edit Admin")
             return redirect("admin_profile")
 
@@ -98,7 +98,7 @@ def edit_staff(request, staff_id):
         staff = Staffs.objects.get(staff=staff_id)
         return render(request, "admin_template/edit_staff.html", {"staff": staff, "id": staff_id})
     except:
-        return redirect('/manage_staff')
+        return redirect('manage_staff')
 
 
 def update_staff(request):
@@ -137,7 +137,7 @@ def update_staff(request):
             return redirect("manage_staff")
         except:
             messages.error(request, "Failed to Edit Staff")
-            return redirect("edit_staff", kwargs={"staff_id": staff_id})
+            return redirect("edit_staff", staff_id=staff_id)
 
 
 def delete_staff(request, staff_id):
@@ -146,9 +146,9 @@ def delete_staff(request, staff_id):
         staff.delete()
         user = CustomUser.objects.get(id=staff_id)
         user.delete()
-        return redirect('/manage_staff')
+        return redirect('manage_staff')
     except:
-        return redirect('/manage_staff')
+        return redirect('manage_staff')
 
 
 def add_company(request):
@@ -193,7 +193,7 @@ def edit_company(request, company_id):
         company = Company.objects.get(company=company_id)
         return render(request, "admin_template/edit_company.html", {"company": company, "id": company_id})
     except:
-        return redirect('/manage_company')
+        return redirect('manage_company')
 
 
 def update_company(request):
@@ -226,7 +226,7 @@ def update_company(request):
             return redirect("manage_company")
         except:
             messages.error(request, "Failed to Edit Company")
-            return redirect("edit_company", kwargs={"company_id": company_id})
+            return redirect("edit_company", company_id=company_id)
 
 
 def delete_company(request, company_id):
@@ -235,9 +235,9 @@ def delete_company(request, company_id):
         company.delete()
         user = CustomUser.objects.get(id=company_id)
         user.delete()
-        return redirect('/manage_company')
+        return redirect('manage_company')
     except:
-        return redirect('/manage_company')
+        return redirect('manage_company')
 
 
 def add_student(request):
@@ -326,7 +326,7 @@ def update_student(request):
             return redirect("manage_student")
         except:
             messages.error(request, "Failed to Edit Student")
-            return redirect("edit_student", kwargs={"student_id": student_id})
+            return redirect("edit_student", student_id=student_id)
 
 
 def delete_student(request, student_id):
@@ -335,9 +335,9 @@ def delete_student(request, student_id):
         student.delete()
         user = CustomUser.objects.get(id=student_id)
         user.delete()
-        return redirect('/manage_student')
+        return redirect('manage_student')
     except:
-        return redirect('/manage_student')
+        return redirect('manage_student')
 
 
 def feedback_messages(request):
@@ -378,7 +378,8 @@ def manage_registration(request):
     my_filter = RegistrationFilter(request.GET, queryset=registrations)
     registrations = my_filter.qs
     exp_date = Expiration_date.objects.last()
-    return render(request, "admin_template/manage_registration.html", {"registrations": registrations, "exp_date": exp_date, "my_filter": my_filter})
+    return render(request, "admin_template/manage_registration.html",
+                  {"registrations": registrations, "exp_date": exp_date, "my_filter": my_filter})
 
 
 def reg_approve(request, student_id):
@@ -386,9 +387,9 @@ def reg_approve(request, student_id):
         registration = Students_registration.objects.get(student_id=student_id)
         registration.registration_status = 1
         registration.save()
-        return redirect('/manage_registration')
+        return redirect('manage_registration')
     except:
-        return redirect('/manage_registration')
+        return redirect('manage_registration')
 
 
 def reg_reject(request, student_id):
@@ -396,9 +397,9 @@ def reg_reject(request, student_id):
         registration = Students_registration.objects.get(student_id=student_id)
         registration.registration_status = 2
         registration.save()
-        return redirect('/manage_registration')
+        return redirect('manage_registration')
     except:
-        return redirect('/manage_registration')
+        return redirect('manage_registration')
 
 
 def reg_cancel(request, student_id):
@@ -407,9 +408,9 @@ def reg_cancel(request, student_id):
         registration.registration_status = 0
         registration.reject_reason = ""
         registration.save()
-        return redirect('/manage_registration')
+        return redirect('manage_registration')
     except:
-        return redirect('/manage_registration')
+        return redirect('manage_registration')
 
 
 @csrf_exempt
@@ -457,7 +458,7 @@ def edit_report(request, report_id):
         report = Reports.objects.get(id=report_id)
         return render(request, "admin_template/edit_report.html", {"report": report, "id": report_id})
     except:
-        return redirect('/manage_report')
+        return redirect('manage_report')
 
 
 def update_report(request):
@@ -497,7 +498,8 @@ def view_report(request, report_id):
     my_filter = ReportFilter(request.GET, queryset=reports)
     reports = my_filter.qs
     report_id = Reports.objects.get(id=report_id)
-    return render(request, "admin_template/view_report.html", {"reports": reports, "report_id": report_id, "my_filter": my_filter})
+    return render(request, "admin_template/view_report.html",
+                  {"reports": reports, "report_id": report_id, "my_filter": my_filter})
 
 
 def set_grade(request):
@@ -519,10 +521,10 @@ def set_grade(request):
                     submit_report.submission_status = 2
                     submit_report.save()
             messages.success(request, "Successfully Set Grade")
-            return redirect("view_report", kwargs={"report_id": report_id})
+            return redirect("view_report", report_id=report_id)
         except:
             messages.error(request, "Failed to Set Grade")
-            return redirect("view_report", kwargs={"report_id": report_id})
+            return redirect("view_report", report_id=report_id)
 
 
 def grades(request):
@@ -558,7 +560,9 @@ def view_grade(request, student_id):
             grade_list.save()
         total = s_mark * 0.6 + grade * 0.15 + f_mark * 0.25
         total = round(total)
-        return render(request, "admin_template/grades_list.html", {"s_mark": s_mark, "f_mark": f_mark, "grade": grade, "total": total, "supervisor": supervisor, "id": student_id, "student": student, "grade_list": grade_list})
+        return render(request, "admin_template/grades_list.html",
+                      {"s_mark": s_mark, "f_mark": f_mark, "grade": grade, "total": total, "supervisor": supervisor,
+                       "id": student_id, "student": student, "grade_list": grade_list})
     else:
         return redirect("grades")
 
@@ -577,7 +581,7 @@ def set_final_grade(request):
             grade.save()
             return HttpResponse("True")
         except:
-            return redirect("view_grade", kwargs={"student_id": student_id})
+            return redirect("view_grade", student_id=student_id)
 
 
 @csrf_exempt
@@ -593,4 +597,4 @@ def reset_final_grade(request):
             grade.save()
             return HttpResponse("True")
         except:
-            return redirect("view_grade", kwargs={"student_id": student_id})
+            return redirect("view_grade", student_id=student_id)

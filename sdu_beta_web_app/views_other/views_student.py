@@ -1,4 +1,3 @@
-
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import messages
@@ -8,12 +7,15 @@ from sdu_beta_web_app.models import *
 from django.core.files.storage import FileSystemStorage
 import datetime
 
+
 def student_home(request):
     return render(request, "student_template/home.html")
+
 
 def student_profile(request):
     user = CustomUser.objects.get(id=request.user.id)
     return render(request, "student_template/student_profile.html", {"user": user})
+
 
 def update_student_profile(request):
     if request.method != "POST":
@@ -48,10 +50,12 @@ def update_student_profile(request):
             messages.error(request, "Failed to Edit student profile")
             return redirect("student_profile")
 
+
 def student_feedback(request):
     student_id = Students.objects.get(student=request.user.id)
     feedbacks = Students_feedback.objects.filter(student_id=student_id)
     return render(request, "student_template/student_feedback.html", {"feedbacks": feedbacks})
+
 
 def save_feedback(request):
     if request.method != "POST":
@@ -68,13 +72,16 @@ def save_feedback(request):
             messages.error(request, "Failed to Sent Feedback")
             return redirect("student_feedback")
 
+
 def student_registration(request):
     student = Students.objects.get(student=request.user.id)
     expiration_date = Expiration_date.objects.last()
     staffs = CustomUser.objects.filter(user_type=2)
     companies = CustomUser.objects.filter(user_type=3)
     data = Students_registration.objects.filter(student_id=student)
-    return render(request, "student_template/student_registration.html", {"data": data, "expiration_date": expiration_date, "staffs": staffs, "companies": companies})
+    return render(request, "student_template/student_registration.html",
+                  {"data": data, "expiration_date": expiration_date, "staffs": staffs, "companies": companies})
+
 
 @csrf_exempt
 def cancel_registration(request):
@@ -85,9 +92,10 @@ def cancel_registration(request):
             student_id = Students.objects.get(student=request.user.id)
             registration = Students_registration.objects.get(student_id=student_id)
             registration.delete()
-            return redirect('/student_registration')
+            return redirect('student_registration')
         except:
-            return redirect('/student_registration')
+            return redirect('student_registration')
+
 
 def confirm_registration(request):
     if request.method != "POST":
@@ -108,13 +116,15 @@ def confirm_registration(request):
         try:
             supervisor = CustomUser.objects.get(id=supervisor_id)
             student_id = Students.objects.get(student=request.user.id)
-            registration = Students_registration(student_id=student_id, agreement=agreement_url, supervisor_id=supervisor, registration_status=0, beta_type=beta_type)
+            registration = Students_registration(student_id=student_id, agreement=agreement_url,
+                                                 supervisor_id=supervisor, registration_status=0, beta_type=beta_type)
             registration.save()
             messages.success(request, "Successfully Confirmed Registration")
             return redirect("student_registration")
         except:
             messages.error(request, "Failed to Confirm Registration")
             return redirect("student_registration")
+
 
 def reports(request):
     student = Students.objects.get(student=request.user.id)
@@ -128,6 +138,7 @@ def reports(request):
     else:
         messages.error(request, "You have not registered, or Your request not yet approved(or rejected)")
         return redirect("student_registration")
+
 
 def report_detail(request, report_id):
     check_exist = Reports.objects.filter(id=report_id).exists()
@@ -143,12 +154,15 @@ def report_detail(request, report_id):
             report_details = Report_submitting.objects.get(report_id=report.id, student_id=student.id)
         except Report_submitting.DoesNotExist:
             report_details = None
-        return render(request, "student_template/report_detail.html", {"report": report, "id": report_id, "report_details": report_details})
+        return render(request, "student_template/report_detail.html",
+                      {"report": report, "id": report_id, "report_details": report_details})
     elif not registered:
-        messages.error(request, "You have not registered, please register first or Your request not yet approved.(or rejected)")
+        messages.error(request,
+                       "You have not registered, please register first or Your request not yet approved.(or rejected)")
         return redirect("student_registration")
     else:
-        return redirect('/reports')
+        return redirect('reports')
+
 
 @csrf_exempt
 def cancel_report(request):
@@ -163,6 +177,7 @@ def cancel_report(request):
         except:
             return redirect("reports")
 
+
 def submit_report(request):
     if request.method != "POST":
         return redirect("reports")
@@ -172,13 +187,15 @@ def submit_report(request):
         student_id = Students.objects.get(student=request.user.id)
         report = Reports.objects.get(id=report_id)
         try:
-            report_submit = Report_submitting(student_id=student_id, report_id=report, submission_status=1, references=reference)
+            report_submit = Report_submitting(student_id=student_id, report_id=report, submission_status=1,
+                                              references=reference)
             report_submit.save()
             messages.success(request, "Successfully Submitted Report")
-            return redirect("report_detail", kwargs={"report_id": report_id})
+            return redirect("report_detail", report_id=report_id)
         except:
             messages.error(request, "Failed to Submit Report")
-            return redirect("report_detail", kwargs={"report_id": report_id})
+            return redirect("report_detail", report_id=report_id)
+
 
 def grades_list(request):
     student = Students.objects.get(student=request.user.id)
@@ -194,7 +211,7 @@ def grades_list(request):
         f_mark = 0
         for report in reports:
             grade = grade + report.grade
-        grade = grade/15
+        grade = grade / 15
         grade = round(grade)
         try:
             grade_list = Grades_List.objects.get(student_id=student)
@@ -204,7 +221,9 @@ def grades_list(request):
             grade_list = None
         total = s_mark * 0.6 + grade * 0.15 + f_mark * 0.25
         total = round(total)
-        return render(request, "student_template/grades_list.html", {"s_mark": s_mark, "f_mark": f_mark, "grade": grade, "total": total, "supervisor": supervisor, "student": student})
+        return render(request, "student_template/grades_list.html",
+                      {"s_mark": s_mark, "f_mark": f_mark, "grade": grade, "total": total, "supervisor": supervisor,
+                       "student": student})
     else:
         messages.error(request, "You have not registered, or Your request not yet approved(or rejected)")
         return redirect("student_registration")
