@@ -1,0 +1,16 @@
+{% extends 'sdu_beta_registration/signup_base.html' %}
+{% block signup_form %}
+<div class="form-group">
+  <input class="form-control" type="text" name="fullname" placeholder="Name Surname" required autofocus
+    value="{{ fullname }}" />
+</div>
+<div class="form-group">
+  <input class="form-control" type="email" name="email" placeholder="Email address" required value="{{ email }}" />
+</div>
+<div class="form-group">
+  <input class="form-control" type="password" name="password" placeholder="Password" required value="{{ password }}" />
+</div>
+<div class="form-group">
+  <input class="form-control" type="password" name="password1" placeholder="Confirm Password" required />
+</div>
+{% endblock signup_form %}
